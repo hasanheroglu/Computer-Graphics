@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" >
+<title>Week3-Part3</title>
+</head>
+
+<body>
+<p>
+Question 1
+</br>In part 1, I used model and view matrices (modelViewMatrix) and I used 2 rotation(rotateX and rotateY) matrices.
+</br> rotateX(45) = [1,0,0,0;0,cos45,-sin45,0;0,sin45,cos45,0;0,0,0,1];
+</br>rotateY(45) = [cos45,0,sin45,0;0,1,0,0;-sin45,0,cos45,0;0,0,0,1]
+</br>In part2, I used model,view and project matrices and I used 3 different transformation matrices which are rotateX, rotateY and translate.
+</br>rotateX and rotateY are same like before.
+</br>translate(ax,ay,az) = [1,0,0,ax;0,1,0,ay;0,0,1,az;0,0,0,1]; 
+</br>Question 2
+</br>Part 1 - Cube = (rotateY)*(rotateX)*p;
+</br>Part 2 - Middle_Cube = translate*p;
+</br>Part 2 - Left_Cube = translate*rotateY;
+</br>Part 3 - Right_Cube = translate*rotateX*rotateY
+ </p>
+</body>
+</html>

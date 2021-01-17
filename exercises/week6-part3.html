@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" >
+<title>Week6-Part3</title>
+
+<script id="vertex-shader" type="x-shader/x-vertex">
+attribute vec4 vPosition;
+attribute vec3 vNormal;
+
+varying vec4 fColor;
+
+uniform mat4 modelViewMatrix;
+uniform mat4 projectionMatrix;
+uniform vec4 diffuseProduct;
+uniform vec4 ambientProduct;
+uniform vec4 lightPosition;
+uniform mat3 normalMatrix;
+
+varying vec3 normal;
+varying float s, t, x;
+
+
+void
+main()
+{
+    float pi = acos(0.0);
+    s= acos(vNormal.y)/pi;
+    t = 0.5*acos(vNormal.x/sqrt(1.0-vNormal.y*vNormal.y))/pi;
+
+    vec3 pos = (modelViewMatrix * vPosition).xyz;
+    vec3 light = (modelViewMatrix * lightPosition).xyz;
+    vec3 L = lightPosition.w == 0.0 ? normalize(light) : normalize(light - pos);
+
+    vec3 E = -normalize(pos);
+
+    vec3 N = normalize(normalMatrix*vNormal.xyz);
+
+    vec4 ambient = ambientProduct;
+
+    float Kd = max(dot(L,N), 0.0);
+    vec4 diffuse = Kd*diffuseProduct;
+    fColor = diffuse;
+    fColor.a = 1.0;
+    gl_Position = projectionMatrix*modelViewMatrix*vPosition;
+}
+</script>
+
+<script id="fragment-shader" type="x-shader/x-fragment">
+precision mediump float;
+
+varying vec4 fColor;
+varying vec3 normal;
+varying float s, t, x;
+
+
+uniform sampler2D texture;
+
+void
+main()
+{
+    gl_FragColor = texture2D(texture, vec2(s,t));
+}
+</script>
+
+<script type="text/javascript" src="../Common/webgl-utils.js"></script>
+<script type="text/javascript" src="../Common/initShaders.js"></script>
+<script type="text/javascript" src="../Common/MV.js"></script>
+<script type="text/javascript" src="week6-part3.js"></script>
+</head>
+
+<body>
+<button id = "Button0">Increase Subdivision</button>
+<button id = "Button1">Decrease Subdivision</button>
+<p></p>
+<canvas id="gl-canvas" width="512" height="512">
+Oops ... your browser doesn't support the HTML5 canvas element
+</canvas>
+<p>I used LINEAR filtering for MIN_FILTER and LINEAR_MIPMAP_NEAREST for MAG_FILTER.</br> 
+Reason for MIN_FILTER: LINEAR filtering has less aliasing errors when you compared with point sampling(NEAREST).</br>
+Reason for MAG_FILTER: LINER_MIPMAP_NEAREST is the best mipmap that WebGL can give us.
+</p>
+</body>
+</html>

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" >
+<title>Week4-Part5</title>
+
+<script id="vertex-shader" type="x-shader/x-vertex">
+attribute vec4 vPosition;
+attribute vec3 vNormal;
+
+varying vec4 fColor;
+varying vec3 N, L, E;
+
+uniform mat4 modelViewMatrix;
+uniform mat4 projectionMatrix;
+uniform mat3 normalMatrix;
+uniform vec4 lightPosition;
+
+void
+main()
+{
+    vec3 pos = (modelViewMatrix * vPosition).xyz;
+    vec3 light = (modelViewMatrix * lightPosition).xyz;
+    L = lightPosition.w == 0.0 ? light : light - pos;
+    E = -pos;
+    N = normalMatrix*vNormal.xyz;
+
+    gl_Position = projectionMatrix*modelViewMatrix*vPosition;
+}
+</script>
+
+<script id="fragment-shader" type="x-shader/x-fragment">
+precision mediump float;
+
+uniform vec4 ambientProduct, diffuseProduct, specularProduct;
+uniform float shininess;
+
+varying vec3 N, L, E;
+
+void
+main()
+{
+    vec4 fColor;
+
+    vec3 H = normalize(normalize(L)+normalize(E));
+
+    vec4 ambient = ambientProduct;
+
+    float Kd = max(dot(normalize(L),normalize(N)), 0.0);
+    vec4 diffuse = Kd*diffuseProduct;
+
+    float Ks = pow(max(dot(normalize(N), normalize(H)), 0.0), shininess);
+    vec4  specular = Ks * specularProduct;
+
+    if( dot(L, N) < 0.0 ) {
+        specular = vec4(0.0, 0.0, 0.0, 1.0);
+    } 
+
+    fColor = ambient + diffuse + specular;
+    fColor.a = 1.0;
+
+    gl_FragColor = fColor;
+}
+</script>
+
+<div>
+Kd  <input id="Kd_x" type="range"
+  min="0.0" max="1.0" step="0.1" value="0.5" /> 
+  <input id="Kd_y" type="range"
+  min="0.0" max="1.0" step="0.1" value="0.5" />
+  <input id="Kd_z" type="range"
+  min="0.0" max="1.0" step="0.1" value="0.5" />
+</div>
+<div>
+Ks <input id="Ks_x" type="range"
+  min="0.0" max="1.0" step="0.1" value="0.5" /> 
+  <input id="Ks_y" type="range"
+  min="0.0" max="1.0" step="0.1" value="0.5" />
+  <input id="Ks_z" type="range"
+  min="0.0" max="1.0" step="0.1" value="0.5" />
+<div>
+ Ka <input id="Ka_x" type="range"
+  min="0.0" max="1.0" step="0.1" value="0.5" /> 
+  <input id="Ka_y" type="range"
+  min="0.0" max="1.0" step="0.1" value="0.5" />
+  <input id="Ka_z" type="range"
+  min="0.0" max="1.0" step="0.1" value="0.5" />
+1 </div>
+<div>
+Shininess 0<input id="Shininess" type="range"
+  min="0" max="100" step="10" value="50" />
+100 </div>
+<div>
+Le <input id="Le_x" type="range"
+  min="0.0" max="1.0" step="0.1" value="0.5" /> 
+  <input id="Le_y" type="range"
+  min="0.0" max="1.0" step="0.1" value="0.5" />
+  <input id="Le_z" type="range"
+  min="0.0" max="1.0" step="0.1" value="0.5" />
+</div>
+
+<script type="text/javascript" src="../Common/webgl-utils.js"></script>
+<script type="text/javascript" src="../Common/initShaders.js"></script>
+<script type="text/javascript" src="../Common/MV.js"></script>
+<script type="text/javascript" src="week4-part5.js"></script>
+</head>
+
+<body>
+<button id = "Button0">Increase Subdivision</button>
+<button id = "Button1">Decrease Subdivision</button>
+
+<canvas id="gl-canvas" width="512" height="512">
+Oops ... your browser doesn't support the HTML5 canvas element
+</canvas>
+<p>Phong shading better than Gouraud shading when simulating highlight. Becau se instead of Gouraud shading Phong shading interpolates normals and paints each point on polygon.</p>
+</body>
+</html>

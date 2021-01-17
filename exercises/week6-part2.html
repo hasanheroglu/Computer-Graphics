@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" >
+<title>Week6-Part2</title>
+
+<div>
+	<button id="MAG_L">MAG_FILTER_LINEAR</button>
+	<button id="MAG_N">MAG_FILTER_NEAREST</button>
+	<button id="MAG_NMN">MAG_FILTER_NEAREST_MIPMAP_NEAREST</button>
+	<button id="MAG_LMN">MAG_FILTER_LINEAR_MIPMAP_NEAREST</button>
+	<button id="MAG_NML">MAG_FILTER_NEAREST_MIPMAP_LINEAR</button>
+	<button id="MAG_LML">MAG_FILTER_LINEAR_MIPMAP_LINEAR</button>
+</div>
+<div>
+	<button id="MIN_L">MIN_FILTER_LINEAR</button>
+	<button id="MIN_N">MIN_FILTER_NEAREST</button>
+	<button id="MIN_NMN">MIN_FILTER_NEAREST_MIPMAP_NEAREST</button>
+	<button id="MIN_LMN">MIN_FILTER_LINEAR_MIPMAP_NEAREST</button>
+	<button id="MIN_NML">MIN_FILTER_NEAREST_MIPMAP_LINEAR</button>
+	<button id="MIN_LML">MIN_FILTER_LINEAR_MIPMAP_LINEAR</button>
+</div>
+<div>
+	<button id="S_R">S_REPEAT</button>
+	<button id="S_C">S_CLAMP_TO_EDGE</button>
+	<button id="S_MR">S_MIRRORED_REPEAT</button>
+</div>
+<div>
+	<button id="T_R">T_REPEAT</button>
+	<button id="T_C">T_CLAMP_TO_EDGE</button>
+	<button id="T_MR">T_MIRRORED_REPEAT</button>
+</div>
+
+<script id="vertex-shader" type="x-shader/x-vertex">
+attribute vec4 vPosition;
+attribute vec4 vColor;
+attribute vec2 vTexCoord;
+
+uniform mat4 modelViewMatrix;
+uniform mat4 projectionMatrix;
+
+varying vec4 fColor;
+varying vec2 fTexCoord;
+
+void
+main()
+{
+  gl_PointSize = 10.0;
+  gl_Position = projectionMatrix*modelViewMatrix*vPosition;
+  fColor = vColor;
+  fTexCoord = vTexCoord;
+}
+</script>
+
+<script id="fragment-shader" type="x-shader/x-fragment">
+precision mediump float;
+
+varying vec4 fColor;
+varying vec2 fTexCoord;
+uniform sampler2D texMap;
+
+void
+main()
+{
+    gl_FragColor = texture2D(texMap, fTexCoord);
+}
+</script>
+
+<script type="text/javascript" src="../Common/webgl-utils.js"></script>
+<script type="text/javascript" src="../Common/initShaders.js"></script>
+<script type="text/javascript" src="../Common/MV.js"></script>
+<script type="text/javascript" src="week6-part2.js"></script>
+</head>
+
+<body>
+<canvas id="gl-canvas" width="512" height="512">
+Oops ... your browser doesn't support the HTML5 canvas element
+</canvas>
+</body>
+</html>
